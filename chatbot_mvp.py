@@ -3,16 +3,29 @@ from langchain.llms import OpenAI
 from langchain.vectorstores import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 import speech_recognition as sr
-import pyttsx3
+from gtts import gTTS
 import os
+import base64
 
-# Initialize speech engine
-engine = pyttsx3.init()
-
+# Function to convert text to speech and play it
 def speak(text):
-    engine.say(text)
-    engine.runAndWait()
+    tts = gTTS(text=text, lang="en")
+    tts.save("response.mp3")
 
+    # Provide a link to download and play audio
+    with open("response.mp3", "rb") as f:
+        audio_bytes = f.read()
+    audio_base64 = base64.b64encode(audio_bytes).decode()
+    
+    audio_html = f'''
+    <audio controls>
+        <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
+        Your browser does not support audio playback.
+    </audio>
+    '''
+    st.markdown(audio_html, unsafe_allow_html=True)
+
+# Function to convert speech to text
 def listen():
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
