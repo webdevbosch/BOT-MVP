@@ -9,3 +9,5 @@ numpy
 tiktoken
 transformers
 torch
+python-dotenv
+requests
